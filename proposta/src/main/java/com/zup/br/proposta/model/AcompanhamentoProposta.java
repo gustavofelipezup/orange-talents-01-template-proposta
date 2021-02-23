@@ -56,6 +56,24 @@ public interface AcompanhamentoProposta {
 	    private Long idProposta;
 	    @JsonProperty
 	    private BigDecimal limite;
+	    
+		public String getId() {
+			return id;
+		}
+		public String getTitular() {
+			return titular;
+		}
+		public LocalDateTime getEmitidoEm() {
+			return emitidoEm;
+		}
+		public Long getIdProposta() {
+			return idProposta;
+		}
+		public BigDecimal getLimite() {
+			return limite;
+		}
+	    
+	    
 	}
 	
 	@GetMapping("api/cartoes/{id}")
@@ -81,6 +99,7 @@ public interface AcompanhamentoProposta {
 		private String titular;
 		private BigDecimal limite;
 		private Long idProposta;
+		private Proposta proposta;
 
 		public ConsultaCartaoResponse(String id, LocalDateTime emitidoEm, String titular, BigDecimal limite, Long idProposta) {
 			this.id = id;
@@ -101,6 +120,10 @@ public interface AcompanhamentoProposta {
 
 		public Long getIdProposta() {
 			return idProposta;
+		}
+		
+		public Proposta getProposta() {
+			return proposta;
 		}
 		
 		public BigDecimal getLimite() {

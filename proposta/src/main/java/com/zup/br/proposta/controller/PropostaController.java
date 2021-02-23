@@ -1,8 +1,11 @@
 package com.zup.br.proposta.controller;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
@@ -21,7 +24,9 @@ import com.zup.br.proposta.core.Status;
 import com.zup.br.proposta.dto.PropostaDto;
 import com.zup.br.proposta.model.AcompanhamentoProposta;
 import com.zup.br.proposta.model.AnaliseClient;
+import com.zup.br.proposta.model.Cartao;
 import com.zup.br.proposta.model.Proposta;
+import com.zup.br.proposta.repositoy.CartaoRepository;
 import com.zup.br.proposta.repositoy.PropostaRepository;
 
 import feign.FeignException;
@@ -32,13 +37,18 @@ import feign.FeignException.UnprocessableEntity;
 public class PropostaController {
 	
 	private final PropostaRepository propostaRepository;
+	private final CartaoRepository cartaoRepository;
 	private final AnaliseClient analiseClient;
 	private final AcompanhamentoProposta acompanhamentoProposta;
 	
-	public PropostaController(PropostaRepository propostaRepository, AnaliseClient analiseClient, AcompanhamentoProposta acompanhamentoProposta) {
+	@PersistenceContext
+	private EntityManager em;
+	
+	public PropostaController(PropostaRepository propostaRepository, AnaliseClient analiseClient, AcompanhamentoProposta acompanhamentoProposta, CartaoRepository cartaoRepository) {
 		this.propostaRepository = propostaRepository;
 		this.analiseClient = analiseClient;
 		this.acompanhamentoProposta = acompanhamentoProposta;
+		this.cartaoRepository = cartaoRepository;
 	}
 	
 	@PostMapping
@@ -89,6 +99,9 @@ public class PropostaController {
 			try {
 				AcompanhamentoProposta.ConsultaCartaoResponse resposta = acompanhamentoProposta.consulta(requisicao.getIdProposta());
 				System.out.println(resposta.getTitular());
+				Cartao cartao = new Cartao(resposta.getId(), pesquisaCartao.get(), resposta.getEmitidoEm());
+				System.out.println(pesquisaCartao.get());
+				cartaoRepository.save(cartao);
 				return ResponseEntity.status(HttpStatus.OK).body(resposta);
 			} catch (FeignException.NotFound e) {
 				return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
@@ -107,11 +120,10 @@ public class PropostaController {
 		
 		proposta.forEach(p -> {
 			AcompanhamentoProposta.NovoCartaoRequest requisicao = new AcompanhamentoProposta.NovoCartaoRequest(p);
-			//AcompanhamentoProposta.ConsultaCartaoResponse cartao = new AcompanhamentoProposta.ConsultaCartaoResponse(null, null, null, null, null)
 					
 			try {
 				AcompanhamentoProposta.NovoCartaoResponse resposta = acompanhamentoProposta.consulta(requisicao);
-				System.out.println(requisicao);
+				//AcompanhamentoProposta.ConsultaCartaoResponse cartao = new AcompanhamentoProposta.ConsultaCartaoResponse(resposta.getId(), resposta.getEmitidoEm(), resposta.getTitular(), resposta.getLimite(), resposta.getIdProposta());
 				p.setProcessado();
 				propostaRepository.save(p);
 				System.out.println("Proposta processada: " + p.getDocumento());		

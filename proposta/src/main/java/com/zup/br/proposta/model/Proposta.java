@@ -43,8 +43,6 @@ public class Proposta {
 	private BigDecimal salario;
 	@Enumerated(EnumType.STRING)
 	private Status status;
-	@OneToOne(mappedBy = "proposta", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-	private Cartao cartao;
 	private Boolean processado = false;
 	
 	public Proposta() {

@@ -1,14 +1,13 @@
 package com.zup.br.proposta.model;
 
-import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.Map;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -17,40 +16,37 @@ public class Cartao {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	private LocalDateTime emitidoEm;
-	private String titular;
-	private String biometria;
-	private BigDecimal limite;
-	private Long idProposta;
-	@OneToOne
+	private String numeroCartao;
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "Proposta", referencedColumnName = "id")
 	private Proposta proposta;
-	
+	private LocalDateTime emitidoEm;
 
+	public Cartao() {
+		super();
+	}
+
+	public Cartao(String numeroCartao, Proposta proposta, LocalDateTime emitidoEm) {
+		super();
+		this.numeroCartao = numeroCartao;
+		this.proposta = proposta;
+		this.emitidoEm = emitidoEm;
+	}
 
 	public Long getId() {
 		return id;
 	}
 
+	public String getNumeroCartao() {
+		return numeroCartao;
+	}
+
+	public Proposta getProposta() {
+		return proposta;
+	}
+
 	public LocalDateTime getEmitidoEm() {
 		return emitidoEm;
 	}
-
-	public String getTitular() {
-		return titular;
-	}
-
-	public String getBiometria() {
-		return biometria;
-	}
-
-
-	public BigDecimal getLimite() {
-		return limite;
-	}
-
-	public Long getIdProposta() {
-		return idProposta;
-	}
-	
 	
 }
