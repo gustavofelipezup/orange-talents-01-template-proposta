@@ -4,6 +4,8 @@ import java.time.LocalDateTime;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -21,6 +23,10 @@ public class Cartao {
 	@JoinColumn(name = "Proposta", referencedColumnName = "id")
 	private Proposta proposta;
 	private LocalDateTime emitidoEm;
+	@OneToOne
+	private Bloqueio bloqueio;
+	@Enumerated(EnumType.STRING)
+	private StatusCartao statusCartao = StatusCartao.DESBLOQUEADO;
 
 	public Cartao() {
 		super();
@@ -31,6 +37,16 @@ public class Cartao {
 		this.numeroCartao = numeroCartao;
 		this.proposta = proposta;
 		this.emitidoEm = emitidoEm;
+	}
+	
+	public void bloquear(Bloqueio bloqueio) {
+		this.bloqueio = bloqueio;
+		
+	}
+	
+	public void incluiBloqueios(Bloqueio bloqueio2) {
+		// TODO Auto-generated method stub
+		
 	}
 
 	public Long getId() {
@@ -48,5 +64,24 @@ public class Cartao {
 	public LocalDateTime getEmitidoEm() {
 		return emitidoEm;
 	}
+
+	public StatusCartao getStatusCartao() {
+		return statusCartao;
+	}
 	
+	public void setProposta(Proposta proposta) {
+		this.proposta = proposta;
+	}
+	
+	public enum StatusCartao {
+		BLOQUEADO, DESBLOQUEADO;
+		
+		public static StatusCartao resultadoPara(String resultadoBloqueio) {
+			if (resultadoBloqueio.equals("BLOQUEADO"))
+				return BLOQUEADO;
+			
+			return DESBLOQUEADO;
+		}
+
+	}
 }

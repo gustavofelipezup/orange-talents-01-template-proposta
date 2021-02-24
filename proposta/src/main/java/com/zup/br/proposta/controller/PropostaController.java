@@ -90,17 +90,15 @@ public class PropostaController {
 	@GetMapping("/cartoes/{id}")
 	public ResponseEntity<?> consultaCartao(@PathVariable(value = "id") Long propostaId) {
 		
-		Optional<Proposta> pesquisaCartao = propostaRepository.findById(propostaId);
-		System.out.println(pesquisaCartao);
-		if(pesquisaCartao.isPresent()) {
-			System.out.println("Proposta gerada.");
+		Optional<Proposta> proposta = propostaRepository.findById(propostaId);
+		if(proposta.isPresent()) {
+//			System.out.println("Proposta gerada.");
 			
-			AcompanhamentoProposta.ConsultaCartaoRequest requisicao = new AcompanhamentoProposta.ConsultaCartaoRequest(pesquisaCartao.get());
+			AcompanhamentoProposta.ConsultaCartaoRequest requisicao = new AcompanhamentoProposta.ConsultaCartaoRequest(proposta.get());
 			try {
 				AcompanhamentoProposta.ConsultaCartaoResponse resposta = acompanhamentoProposta.consulta(requisicao.getIdProposta());
-				System.out.println(resposta.getTitular());
-				Cartao cartao = new Cartao(resposta.getId(), pesquisaCartao.get(), resposta.getEmitidoEm());
-				System.out.println(pesquisaCartao.get());
+				Cartao cartao = new Cartao(resposta.getId(), proposta.get(), resposta.getEmitidoEm());
+				cartao.setProposta(proposta.get());
 				cartaoRepository.save(cartao);
 				return ResponseEntity.status(HttpStatus.OK).body(resposta);
 			} catch (FeignException.NotFound e) {
@@ -111,11 +109,11 @@ public class PropostaController {
 		}
 	}
 	
-	@Scheduled(fixedRate = 5000)
+	@Scheduled(fixedRate = 10000)
 	public void CartaoRefresh() {
 		var proposta = propostaRepository.findByStatus(Status.ELEGIVEL);
 		if (proposta.isEmpty()) {
-			System.out.println("Nenhuma proposta.");
+//			System.out.println("Nenhuma proposta.");
 		}
 		
 		proposta.forEach(p -> {
@@ -123,10 +121,9 @@ public class PropostaController {
 					
 			try {
 				AcompanhamentoProposta.NovoCartaoResponse resposta = acompanhamentoProposta.consulta(requisicao);
-				//AcompanhamentoProposta.ConsultaCartaoResponse cartao = new AcompanhamentoProposta.ConsultaCartaoResponse(resposta.getId(), resposta.getEmitidoEm(), resposta.getTitular(), resposta.getLimite(), resposta.getIdProposta());
 				p.setProcessado();
 				propostaRepository.save(p);
-				System.out.println("Proposta processada: " + p.getDocumento());		
+//				System.out.println("Proposta processada: " + p.getDocumento());		
 			} catch (UnprocessableEntity e) {
 				return;
 			}

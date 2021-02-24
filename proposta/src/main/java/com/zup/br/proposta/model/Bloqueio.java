@@ -33,4 +33,12 @@ public class Bloqueio {
 	
 	@NotBlank
 	private String userAgent;
+	
+	public Bloqueio(String localAddr, String usuarioLogado, Cartao cartao) {
+		this.ip = localAddr;
+		this.userAgent = usuarioLogado;
+		this.cartao = cartao;
+	}
+	
+	
 }
