@@ -19,6 +19,7 @@ import javax.validation.constraints.PositiveOrZero;
 
 import com.zup.br.proposta.core.Status;
 import com.zup.br.proposta.core.validator.CpfCnpj;
+import com.zup.br.proposta.model.AcompanhamentoProposta.NovoCartaoResponse;
 
 @Entity
 public class Proposta {
@@ -44,6 +45,8 @@ public class Proposta {
 	@Enumerated(EnumType.STRING)
 	private Status status;
 	private Boolean processado = false;
+	@OneToOne(mappedBy = "proposta", cascade = CascadeType.MERGE)
+	private Cartao cartao;
 	
 	public Proposta() {
 		super();
@@ -56,6 +59,10 @@ public class Proposta {
 		this.endereco = endereco;
 		this.email = email;
 		this.salario = salario;
+	}
+	
+	public void associaCartao(AcompanhamentoProposta.ConsultaCartaoResponse novoCartaoResponse) {
+		this.cartao = new Cartao(novoCartaoResponse.getId(), this, novoCartaoResponse.getEmitidoEm());
 	}
 
 	public Long getId() {

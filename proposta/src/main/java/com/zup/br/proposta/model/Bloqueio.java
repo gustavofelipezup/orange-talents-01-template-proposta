@@ -20,17 +20,13 @@ public class Bloqueio {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
 	@NotNull
 	@ManyToOne
 	private Cartao cartao;
-	
 	@CreationTimestamp
 	private LocalDateTime instante;
-	
 	@NotBlank
 	private String ip;
-	
 	@NotBlank
 	private String userAgent;
 	

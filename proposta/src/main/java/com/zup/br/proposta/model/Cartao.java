@@ -1,6 +1,8 @@
 package com.zup.br.proposta.model;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -10,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 
@@ -20,12 +23,12 @@ public class Cartao {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	private String numeroCartao;
-	@OneToOne(cascade = CascadeType.ALL)
+	@OneToOne
 	@JoinColumn(name = "Proposta", referencedColumnName = "id")
 	private Proposta proposta;
 	private LocalDateTime emitidoEm;
-	@OneToOne
-	private Bloqueio bloqueio;
+	@OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+	private List<Bloqueio> bloqueios = new ArrayList();
 	@Enumerated(EnumType.STRING)
 	private StatusCartao statusCartao = StatusCartao.DESBLOQUEADO;
 
@@ -42,7 +45,7 @@ public class Cartao {
 	
 	public void novoBloqueio(String resultado, Bloqueio bloqueio) {
 		this.statusCartao = StatusCartao.resultadoPara(resultado);
-		this.bloqueio = bloqueio;
+		this.bloqueios.add(bloqueio);
 	}
 
 	public Long getId() {

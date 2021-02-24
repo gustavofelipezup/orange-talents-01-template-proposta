@@ -3,13 +3,14 @@ package com.zup.br.proposta.model;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 
 @FeignClient(name = "bloqueio", url = "http://localhost:8888")
 public interface BloqueioClient {
 
 	@PostMapping("/api/cartoes/{id}/bloqueios")
-	BloqueioResponse bloquear(@RequestBody BloqueioRequest bloqueioRequest);
+	BloqueioResponse bloquear(@RequestParam String id, @RequestBody BloqueioRequest bloqueioRequest);
 	
 	class BloqueioRequest {
 		

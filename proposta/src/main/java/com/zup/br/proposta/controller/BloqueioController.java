@@ -39,11 +39,12 @@ public class BloqueioController {
 	public ResponseEntity<?> solicitarBloqueio(@PathVariable Long id, HttpServletRequest request, UriComponentsBuilder builder) {
 		System.out.println("Acessando cartão no banco de dados");
 		
-		Optional<Cartao> cartao = cartaoRepository.findById(id);
-		if (cartao.isEmpty()) {
+		Optional<Cartao> possivelCartao = cartaoRepository.findById(id);
+		if (possivelCartao.isEmpty()) {
 			System.out.println("Cartão não encontrado");
 			return ResponseEntity.notFound().build();
 		}
+		Cartao cartao = possivelCartao.get();
 			
 		String usuarioLogadoIp = request.getHeader("X-FORWARDED-FOR");
 		if (usuarioLogadoIp == null) {
@@ -51,17 +52,18 @@ public class BloqueioController {
 		}
 		
 		String userAgent = request.getHeader("User-Agent");
+		System.out.println(userAgent);
 
 		BloqueioClient.BloqueioResponse bloqueioResponse;
 		Bloqueio bloqueio;
 
-		BloqueioClient.BloqueioRequest bloqueioRequest = new BloqueioClient.BloqueioRequest(userAgent);
+		BloqueioClient.BloqueioRequest bloqueioRequest = new BloqueioClient.BloqueioRequest("minha-api");
 		try {
-			bloqueioResponse = bloqueioClient.bloquear(bloqueioRequest);
+			bloqueioResponse = bloqueioClient.bloquear(cartao.getNumeroCartao(), bloqueioRequest);
 			System.out.println(bloqueioResponse.getResultado());
-			bloqueio = new Bloqueio(cartao.get(), usuarioLogadoIp, userAgent);
-			cartao.get().novoBloqueio(bloqueioResponse.getResultado(), bloqueio);
-			cartaoRepository.save(cartao.get());			
+			bloqueio = new Bloqueio(cartao, usuarioLogadoIp, userAgent);
+			cartao.novoBloqueio(bloqueioResponse.getResultado(), bloqueio);
+			cartaoRepository.save(cartao);			
 		} catch (FeignException.UnprocessableEntity e) {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Esse cartão já está bloqueado.");
 		}

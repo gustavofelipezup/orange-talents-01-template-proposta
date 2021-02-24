@@ -16,5 +16,5 @@ public interface PropostaRepository extends JpaRepository<Proposta, Long> {
 	
 	List<Proposta> findByStatus(Enum<Status> status);
 	
-	
+	List<Proposta> findByProcessado(Boolean processado);
 }

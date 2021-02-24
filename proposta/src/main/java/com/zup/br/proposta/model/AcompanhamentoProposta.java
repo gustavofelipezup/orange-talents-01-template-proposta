@@ -99,7 +99,6 @@ public interface AcompanhamentoProposta {
 		private String titular;
 		private BigDecimal limite;
 		private Long idProposta;
-		private Proposta proposta;
 
 		public ConsultaCartaoResponse(String id, LocalDateTime emitidoEm, String titular, BigDecimal limite, Long idProposta) {
 			this.id = id;
@@ -120,10 +119,6 @@ public interface AcompanhamentoProposta {
 
 		public Long getIdProposta() {
 			return idProposta;
-		}
-		
-		public Proposta getProposta() {
-			return proposta;
 		}
 		
 		public BigDecimal getLimite() {

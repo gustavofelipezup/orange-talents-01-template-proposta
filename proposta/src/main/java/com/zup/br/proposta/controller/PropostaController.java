@@ -63,7 +63,8 @@ public class PropostaController {
 		if (findDocumento.isPresent())
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).build();
 		
-		propostaRepository.save(proposta);
+		proposta = propostaRepository.save(proposta);
+	
 		
 		AnaliseClient.ConsultaStatusRequest requisicao = new AnaliseClient.ConsultaStatusRequest(proposta);
 		
@@ -109,24 +110,24 @@ public class PropostaController {
 		}
 	}
 	
-	@Scheduled(fixedRate = 10000)
-	public void CartaoRefresh() {
-		var proposta = propostaRepository.findByStatus(Status.ELEGIVEL);
-		if (proposta.isEmpty()) {
-//			System.out.println("Nenhuma proposta.");
-		}
-		
-		proposta.forEach(p -> {
-			AcompanhamentoProposta.NovoCartaoRequest requisicao = new AcompanhamentoProposta.NovoCartaoRequest(p);
-					
-			try {
-				AcompanhamentoProposta.NovoCartaoResponse resposta = acompanhamentoProposta.consulta(requisicao);
-				p.setProcessado();
-				propostaRepository.save(p);
-//				System.out.println("Proposta processada: " + p.getDocumento());		
-			} catch (UnprocessableEntity e) {
-				return;
-			}
-		});
-	}
+//	@Scheduled(fixedRate = 10000)
+//	public void CartaoRefresh() {
+//		var proposta = propostaRepository.findByStatus(Status.ELEGIVEL);
+//		if (proposta.isEmpty()) {
+////			System.out.println("Nenhuma proposta.");
+//		}
+//		
+//		proposta.forEach(p -> {
+//			AcompanhamentoProposta.NovoCartaoRequest requisicao = new AcompanhamentoProposta.NovoCartaoRequest(p);
+//					
+//			try {
+//				AcompanhamentoProposta.NovoCartaoResponse resposta = acompanhamentoProposta.consulta(requisicao);
+//				p.setProcessado();
+//				propostaRepository.save(p);
+////				System.out.println("Proposta processada: " + p.getDocumento());		
+//			} catch (UnprocessableEntity e) {
+//				return;
+//			}
+//		});
+//	}
 }
