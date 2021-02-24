@@ -8,12 +8,13 @@ import javax.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.zup.br.proposta.model.Bloqueio;
+import com.zup.br.proposta.model.BloqueioClient;
 import com.zup.br.proposta.model.Cartao;
 import com.zup.br.proposta.repositoy.CartaoRepository;
 
@@ -26,23 +27,17 @@ import feign.FeignException;
 public class BloqueioController {
 	
 	private final CartaoRepository cartaoRepository;
+	private final BloqueioClient bloqueioClient;
 	
-	public BloqueioController (CartaoRepository cartaoRepository) {
+	public BloqueioController (CartaoRepository cartaoRepository, BloqueioClient bloqueioClient) {
 		this.cartaoRepository = cartaoRepository;
+		this.bloqueioClient = bloqueioClient;
 	}
 
 	@Transactional
-	@PutMapping
+	@PostMapping
 	public ResponseEntity<?> solicitarBloqueio(@PathVariable Long id, HttpServletRequest request, UriComponentsBuilder builder) {
 		System.out.println("Acessando cartão no banco de dados");
-		
-//		Optional<Cartao> cartao = cartaoRepository.findById(id).orElseThrow(
-//				() -> new IllegalStateException(String.format("Cartão não encontrado")));
-		
-//		String usuarioLogado = request.getHeader("User-Agent");
-		
-//		Bloqueio bloqueio = new Bloqueio(request.getLocalAddr(), usuarioLogadoIp, cartao);
-//		cartao.bloquear(bloqueio);
 		
 		Optional<Cartao> cartao = cartaoRepository.findById(id);
 		if (cartao.isEmpty()) {
@@ -57,18 +52,21 @@ public class BloqueioController {
 		
 		String userAgent = request.getHeader("User-Agent");
 
+		BloqueioClient.BloqueioResponse bloqueioResponse;
 		Bloqueio bloqueio;
-		
-		try {
 
-			bloqueio = new Bloqueio(usuarioLogadoIp, userAgent, cartao.get());
-			cartao.get().incluiBloqueios(bloqueio);
+		BloqueioClient.BloqueioRequest bloqueioRequest = new BloqueioClient.BloqueioRequest(userAgent);
+		try {
+			bloqueioResponse = bloqueioClient.bloquear(bloqueioRequest);
+			System.out.println(bloqueioResponse.getResultado());
+			bloqueio = new Bloqueio(cartao.get(), usuarioLogadoIp, userAgent);
+			cartao.get().novoBloqueio(bloqueioResponse.getResultado(), bloqueio);
 			cartaoRepository.save(cartao.get());			
 		} catch (FeignException.UnprocessableEntity e) {
 			return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body("Esse cartão já está bloqueado.");
 		}
-		return null;
-//		return ResponseEntity.ok();
+		
+		return ResponseEntity.ok(bloqueioResponse);
 	}
 	
 }

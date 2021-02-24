@@ -34,11 +34,48 @@ public class Bloqueio {
 	@NotBlank
 	private String userAgent;
 	
-	public Bloqueio(String localAddr, String usuarioLogado, Cartao cartao) {
-		this.ip = localAddr;
-		this.userAgent = usuarioLogado;
+	public Bloqueio(Cartao cartao, String usuarioLogadoIp, String userAgent) {
+		this.cartao = cartao;
+		this.ip = usuarioLogadoIp;
+		this.userAgent = userAgent;
+	}
+	
+	public Bloqueio() {
+		super();
+	}
+
+	public Cartao getCartao() {
+		return cartao;
+	}
+
+	public void setCartao(Cartao cartao) {
 		this.cartao = cartao;
 	}
+
+	public LocalDateTime getInstante() {
+		return instante;
+	}
+
+	public void setInstante(LocalDateTime instante) {
+		this.instante = instante;
+	}
+
+	public String getIp() {
+		return ip;
+	}
+
+	public void setIp(String ip) {
+		this.ip = ip;
+	}
+
+	public String getUserAgent() {
+		return userAgent;
+	}
+
+	public void setUserAgent(String userAgent) {
+		this.userAgent = userAgent;
+	}
+	
 	
 	
 }

@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+
 @Entity
 public class Cartao {
 
@@ -39,14 +40,9 @@ public class Cartao {
 		this.emitidoEm = emitidoEm;
 	}
 	
-	public void bloquear(Bloqueio bloqueio) {
+	public void novoBloqueio(String resultado, Bloqueio bloqueio) {
+		this.statusCartao = StatusCartao.resultadoPara(resultado);
 		this.bloqueio = bloqueio;
-		
-	}
-	
-	public void incluiBloqueios(Bloqueio bloqueio2) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public Long getId() {
@@ -76,12 +72,11 @@ public class Cartao {
 	public enum StatusCartao {
 		BLOQUEADO, DESBLOQUEADO;
 		
-		public static StatusCartao resultadoPara(String resultadoBloqueio) {
-			if (resultadoBloqueio.equals("BLOQUEADO"))
+		public static StatusCartao resultadoPara(String solicitacao) {
+			if (solicitacao.equals("BLOQUEADO"))
 				return BLOQUEADO;
 			
 			return DESBLOQUEADO;
 		}
-
 	}
 }
