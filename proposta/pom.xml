@@ -46,6 +46,14 @@
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 		
+		<!-- https://mvnrepository.com/artifact/io.prometheus/simpleclient -->
+<dependency>
+    <groupId>io.prometheus</groupId>
+    <artifactId>simpleclient</artifactId>
+    <version>0.10.0</version>
+</dependency>
+		
+		
 		<dependency>
     		<groupId>org.springframework.boot</groupId>
     		<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>

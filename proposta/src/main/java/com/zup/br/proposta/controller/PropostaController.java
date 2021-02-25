@@ -1,7 +1,6 @@
 package com.zup.br.proposta.controller;
 
 import java.net.URI;
-import java.time.LocalDateTime;
 import java.util.Optional;
 
 import javax.persistence.EntityManager;
@@ -10,7 +9,6 @@ import javax.validation.Valid;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.zup.br.proposta.core.Status;
 import com.zup.br.proposta.dto.PropostaDto;
 import com.zup.br.proposta.model.AcompanhamentoProposta;
 import com.zup.br.proposta.model.AnaliseClient;

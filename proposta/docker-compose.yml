@@ -111,8 +111,9 @@ services:
   prometheus:
     image: prom/prometheus
     volumes:
-     - prometheus-volume:/etc/prometheus/
-    network_mode: bridge
+    - ./prometheus.yml:/etc/prometheus/prometheus.yml
+    - prometheus-volume:/etc/prometheus/
+    #network_mode: bridge
     ports:
       - "9090:9090"
 
