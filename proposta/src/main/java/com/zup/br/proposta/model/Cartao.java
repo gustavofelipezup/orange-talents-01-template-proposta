@@ -29,12 +29,12 @@ public class Cartao {
 	private LocalDateTime emitidoEm;
 	@OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
 	private List<Bloqueio> bloqueios = new ArrayList();
+	@OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+	private List<Aviso> avisos = new ArrayList();
 	@Enumerated(EnumType.STRING)
 	private StatusCartao statusCartao = StatusCartao.DESBLOQUEADO;
-
-	public Cartao() {
-		super();
-	}
+	@Enumerated(EnumType.STRING)
+	private StatusAviso statusAviso = StatusAviso.NAO_CRIADO;
 
 	public Cartao(String numeroCartao, Proposta proposta, LocalDateTime emitidoEm) {
 		super();
@@ -46,6 +46,11 @@ public class Cartao {
 	public void novoBloqueio(String resultado, Bloqueio bloqueio) {
 		this.statusCartao = StatusCartao.resultadoPara(resultado);
 		this.bloqueios.add(bloqueio);
+	}
+	
+	public void novoAviso(String resultado, Aviso aviso) {
+		this.statusAviso = StatusAviso.resultadoPara(resultado);
+		this.avisos.add(aviso);
 	}
 
 	public Long getId() {
@@ -72,6 +77,10 @@ public class Cartao {
 		this.proposta = proposta;
 	}
 	
+	public Cartao() {
+		super();
+	}
+	
 	public enum StatusCartao {
 		BLOQUEADO, DESBLOQUEADO;
 		
@@ -80,6 +89,17 @@ public class Cartao {
 				return BLOQUEADO;
 			
 			return DESBLOQUEADO;
+		}
+	}
+
+	public enum StatusAviso {
+		CRIADO, NAO_CRIADO;
+		
+		public static StatusAviso resultadoPara(String solicitacao) {
+			if (solicitacao.equals("CRIADO"))
+				return CRIADO;
+			
+			return NAO_CRIADO;
 		}
 	}
 }

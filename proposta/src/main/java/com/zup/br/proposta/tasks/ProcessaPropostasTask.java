@@ -20,7 +20,7 @@ public class ProcessaPropostasTask {
 	@Autowired
 	private AcompanhamentoProposta acompanhamentoProposta;
 	
-	@Scheduled(fixedDelay = 10000)
+	@Scheduled(fixedDelay = 5000)
 	public void processar() {
 		
 		List<Proposta> propostas = propostaRepository.findByProcessado(false);

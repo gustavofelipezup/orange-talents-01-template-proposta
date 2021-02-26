@@ -16,6 +16,7 @@ public class KeycloakSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.authorizeRequests()
 		.antMatchers("/propostas/**").hasAnyAuthority("SCOPE_write")
 		.antMatchers("/h2-console/**").permitAll()
+		.antMatchers("/actuator/**").permitAll()
 		.anyRequest().authenticated()
 		.and()
 		.csrf().disable()
