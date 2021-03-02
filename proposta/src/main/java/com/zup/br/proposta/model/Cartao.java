@@ -15,6 +15,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.zup.br.proposta.model.Carteira.StatusAssociacao;
+
 
 @Entity
 public class Cartao {
@@ -31,6 +33,8 @@ public class Cartao {
 	private List<Bloqueio> bloqueios = new ArrayList();
 	@OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
 	private List<Aviso> avisos = new ArrayList();
+	@OneToMany(mappedBy = "cartao", cascade = CascadeType.MERGE)
+	private List<Carteira> carteiras = new ArrayList();
 	@Enumerated(EnumType.STRING)
 	private StatusCartao statusCartao = StatusCartao.DESBLOQUEADO;
 	@Enumerated(EnumType.STRING)
@@ -53,6 +57,13 @@ public class Cartao {
 		this.avisos.add(aviso);
 	}
 
+	public void novoMetodo(String resultado, Carteira carteira) {
+		if (resultado.equals("ASSOCIADA")) {
+			carteira.setAssociada(StatusAssociacao.ASSOCIADA);
+			this.carteiras.add(carteira);
+		}
+	}
+	
 	public Long getId() {
 		return id;
 	}
@@ -102,4 +113,5 @@ public class Cartao {
 			return NAO_CRIADO;
 		}
 	}
+
 }

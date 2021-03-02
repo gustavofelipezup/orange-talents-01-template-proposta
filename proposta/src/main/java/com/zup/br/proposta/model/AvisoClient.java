@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 
 
-@FeignClient(name = "aviso", url = "http://localhost:8888")
+@FeignClient(name = "aviso", url = "${contas.host}")
 public interface AvisoClient {
 
 	@PostMapping("/api/cartoes/{id}/avisos")

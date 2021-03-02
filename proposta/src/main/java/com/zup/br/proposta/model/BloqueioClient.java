@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
 
-@FeignClient(name = "bloqueio", url = "http://localhost:8888")
+@FeignClient(name = "bloqueio", url = "${contas.host}")
 public interface BloqueioClient {
 
 	@PostMapping("/api/cartoes/{id}/bloqueios")
